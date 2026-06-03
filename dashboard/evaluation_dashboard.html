@@ -12,6 +12,23 @@
 
             h1 {
                 color: #38bdf8;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                color: #cbd5e1;
+                font-size: 18px;
+            }
+
+            .badge {
+                display: inline-block;
+                background-color: #1e40af;
+                color: white;
+                padding: 8px 14px;
+                border-radius: 20px;
+                font-weight: bold;
+                margin-top: 12px;
+                margin-right: 10px;
             }
 
             .cards {
@@ -52,6 +69,10 @@
                 color: #38bdf8;
             }
 
+            .warning {
+                color: #f59e0b;
+            }
+
             table {
                 width: 100%;
                 margin-top: 40px;
@@ -59,12 +80,14 @@
                 background-color: #1e293b;
                 border-radius: 12px;
                 overflow: hidden;
+                font-size: 14px;
             }
 
             th, td {
-                padding: 14px;
+                padding: 12px;
                 border-bottom: 1px solid #334155;
                 text-align: left;
+                vertical-align: top;
             }
 
             th {
@@ -80,31 +103,63 @@
                 color: #ef4444;
                 font-weight: bold;
             }
+
+            .comments {
+                max-width: 420px;
+                color: #cbd5e1;
+            }
         </style>
     </head>
+
     <body>
         <h1>AI Quality Evaluation Dashboard</h1>
-        <p>LLM response evaluation summary based on generated JSON reports.</p>
+
+        <p class="subtitle">
+            LLM response evaluation summary based on generated JSON reports.
+        </p>
+
+        <div class="badge">Evaluation Type: Context-Aware</div>
+        <div class="badge">LLM-as-a-Judge Enabled</div>
 
         <div class="cards">
             <div class="card">
                 <div class="label">Total Evaluations</div>
-                <div class="value info">1</div>
+                <div class="value info">16</div>
             </div>
 
             <div class="card">
                 <div class="label">Approved</div>
-                <div class="value success">1</div>
+                <div class="value success">14</div>
             </div>
 
             <div class="card">
                 <div class="label">Failed</div>
-                <div class="value danger">0</div>
+                <div class="value danger">2</div>
             </div>
 
             <div class="card">
-                <div class="label">Average Score</div>
-                <div class="value info">3.0</div>
+                <div class="label">Keyword Avg Score</div>
+                <div class="value info">2.94</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Judge Avg Score</div>
+                <div class="value success">8.2</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Approval Rate</div>
+                <div class="value success">87.5%</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Best Keyword Score</div>
+                <div class="value success">5</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Lowest Keyword Score</div>
+                <div class="value warning">1</div>
             </div>
         </div>
 
@@ -112,9 +167,13 @@
             <tr>
                 <th>Timestamp</th>
                 <th>Prompt</th>
-                <th>Score</th>
+                <th>Keyword Score</th>
                 <th>Status</th>
-                <th>Matched Keywords</th>
+                <th>Judge Score</th>
+                <th>Accuracy</th>
+                <th>Clarity</th>
+                <th>Completeness</th>
+                <th>Judge Comments</th>
             </tr>
     
             <tr>
@@ -122,7 +181,191 @@
                 <td>Explain CI/CD in simple terms.</td>
                 <td>3/4</td>
                 <td class="approved">APPROVED</td>
-                <td>testing, deployment, integration</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_114413</td>
+                <td>Explain API testing in simple terms.</td>
+                <td>2/7</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_114416</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>4/7</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_114418</td>
+                <td>Explain DevOps in simple terms.</td>
+                <td>3/7</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_114422</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>1/7</td>
+                <td class="failed">FAILED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_114424</td>
+                <td>Explain Quality Engineering in simple terms.</td>
+                <td>1/7</td>
+                <td class="failed">FAILED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_182559</td>
+                <td>Explain API testing in simple terms.</td>
+                <td>3/5</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_182606</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>3/5</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_182608</td>
+                <td>Explain DevOps in simple terms.</td>
+                <td>3/5</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_182612</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>5/5</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260601_182616</td>
+                <td>Explain Quality Engineering in simple terms.</td>
+                <td>2/5</td>
+                <td class="approved">APPROVED</td>
+                <td>-/10</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="comments">-</td>
+            </tr>
+        
+            <tr>
+                <td>20260602_174028</td>
+                <td>Explain API testing in simple terms.</td>
+                <td>3/5</td>
+                <td class="approved">APPROVED</td>
+                <td>8/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>7</td>
+                <td class="comments">The answer accurately explains API testing in simple terms and uses a relatable analogy to enhance understanding, which aids clarity. However, it lacks details about specific aspects or methods of API testing (such as checking endpoints, inputs/outputs, error handling, performance, and security), which would improve completeness.</td>
+            </tr>
+        
+            <tr>
+                <td>20260602_174035</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>3/5</td>
+                <td class="approved">APPROVED</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>8</td>
+                <td class="comments">The answer accurately describes CI/CD concepts and clearly differentiates between Continuous Integration, Continuous Delivery, and Continuous Deployment. It is mostly complete, providing a good overview suitable for general understanding. However, it could briefly mention the role of Continuous Deployment being a subset of Continuous Delivery for full completeness and clarify that Continuous Delivery is about readiness rather than automation to deployment.</td>
+            </tr>
+        
+            <tr>
+                <td>20260602_174039</td>
+                <td>Explain DevOps in simple terms.</td>
+                <td>4/5</td>
+                <td class="approved">APPROVED</td>
+                <td>8/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>7</td>
+                <td class="comments">The answer accurately explains the core concept of DevOps and its goals, emphasizing collaboration and automation. It is clear and easily understandable. However, it could be more complete by mentioning specific practices, cultural aspects, and continuous integration/continuous delivery (CI/CD).</td>
+            </tr>
+        
+            <tr>
+                <td>20260602_174047</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>5/5</td>
+                <td class="approved">APPROVED</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>8</td>
+                <td class="comments">The answer accurately explains the concept of a Python function in simple terms, making it clear and easy to understand. The example provided is correct and illustrative. However, the explanation of inputs (parameters) and outputs (return values) is very brief and could be expanded slightly to enhance completeness.</td>
+            </tr>
+        
+            <tr>
+                <td>20260602_174051</td>
+                <td>Explain Quality Engineering in simple terms.</td>
+                <td>2/5</td>
+                <td class="approved">APPROVED</td>
+                <td>7/10</td>
+                <td>8</td>
+                <td>8</td>
+                <td>5</td>
+                <td class="comments">The answer provides a generally accurate and clear explanation of Quality Engineering in simple terms. However, it lacks depth and does not mention key aspects such as process improvement, quality assurance methodologies, or the role of quality engineering throughout the product lifecycle. Adding these elements would make the response more complete.</td>
             </tr>
         
         </table>

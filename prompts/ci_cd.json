@@ -1,0 +1,11 @@
+{
+  "name": "ci_cd",
+  "prompt": "Explain CI/CD in simple terms.",
+  "expected_keywords": [
+    "integration",
+    "delivery",
+    "deployment",
+    "automation",
+    "testing"
+  ]
+}

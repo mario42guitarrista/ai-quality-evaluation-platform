@@ -1,0 +1,11 @@
+{
+  "name": "python_basics",
+  "prompt": "Explain Python functions in simple terms.",
+  "expected_keywords": [
+    "function",
+    "parameter",
+    "return",
+    "code",
+    "python"
+  ]
+}

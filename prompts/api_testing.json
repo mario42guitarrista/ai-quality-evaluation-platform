@@ -1,0 +1,11 @@
+{
+  "name": "api_testing",
+  "prompt": "Explain API testing in simple terms.",
+  "expected_keywords": [
+    "api",
+    "request",
+    "response",
+    "endpoint",
+    "status code"
+  ]
+}

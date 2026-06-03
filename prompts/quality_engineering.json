@@ -1,0 +1,11 @@
+{
+  "name": "quality_engineering",
+  "prompt": "Explain Quality Engineering in simple terms.",
+  "expected_keywords": [
+    "quality",
+    "testing",
+    "automation",
+    "process",
+    "software"
+  ]
+}

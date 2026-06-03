@@ -1,0 +1,11 @@
+{
+  "name": "devops",
+  "prompt": "Explain DevOps in simple terms.",
+  "expected_keywords": [
+    "development",
+    "operations",
+    "automation",
+    "deployment",
+    "collaboration"
+  ]
+}
