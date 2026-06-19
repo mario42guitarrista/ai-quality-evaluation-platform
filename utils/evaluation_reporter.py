@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime
 
+from database.repository import save_evaluation_to_db
+
 
 def save_evaluation_report(prompt, response, evaluation, llm_judge=None):
     os.makedirs("reports/evaluations", exist_ok=True)
@@ -20,5 +22,7 @@ def save_evaluation_report(prompt, response, evaluation, llm_judge=None):
 
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(report, file, indent=4, ensure_ascii=False)
+
+    save_evaluation_to_db(report)
 
     return file_path

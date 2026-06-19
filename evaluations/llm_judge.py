@@ -1,4 +1,5 @@
 import json
+from urllib import response
 from utils.openai_client import generate_ai_response
 
 
@@ -32,6 +33,9 @@ Answer:
 """
 
     response = generate_ai_response(judge_prompt)
+    
+    print("\nRAW JUDGE RESPONSE:\n")
+    print(response)
 
     try:
         return json.loads(response)

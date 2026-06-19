@@ -2,22 +2,33 @@ import json
 import os
 
 
-def load_evaluation_reports():
-    reports_path = "reports/evaluations"
+EVALUATION_REPORTS_PATH = "reports/evaluations"
+MODEL_BENCHMARKS_PATH = "reports/model_benchmarks"
+OUTPUT_PATH = "dashboard/evaluation_dashboard.html"
 
-    if not os.path.exists(reports_path):
+
+def load_json_reports(folder_path):
+    if not os.path.exists(folder_path):
         return []
 
     reports = []
 
-    for file_name in os.listdir(reports_path):
+    for file_name in os.listdir(folder_path):
         if file_name.endswith(".json"):
-            file_path = os.path.join(reports_path, file_name)
+            file_path = os.path.join(folder_path, file_name)
 
             with open(file_path, "r", encoding="utf-8") as file:
                 reports.append(json.load(file))
 
     return reports
+
+
+def load_evaluation_reports():
+    return load_json_reports(EVALUATION_REPORTS_PATH)
+
+
+def load_model_benchmark_reports():
+    return load_json_reports(MODEL_BENCHMARKS_PATH)
 
 
 def calculate_metrics(reports):
@@ -38,7 +49,7 @@ def calculate_metrics(reports):
     approved = sum(1 for report in reports if report["evaluation"]["approved"])
     failed = total - approved
 
-    scores = [report["evaluation"]["score"] for report in reports]
+    keyword_scores = [report["evaluation"]["score"] for report in reports]
 
     judge_scores = [
         report["llm_judge"]["score"]
@@ -46,32 +57,49 @@ def calculate_metrics(reports):
         if report.get("llm_judge")
     ]
 
-    average_score = round(sum(scores) / total, 2)
-    approval_rate = round((approved / total) * 100, 2)
-    best_score = max(scores)
-    lowest_score = min(scores)
-
-    average_judge_score = 0
-    if judge_scores:
-        average_judge_score = round(sum(judge_scores) / len(judge_scores), 2)
-
     return {
         "total": total,
         "approved": approved,
         "failed": failed,
-        "average_score": average_score,
-        "approval_rate": approval_rate,
-        "best_score": best_score,
-        "lowest_score": lowest_score,
-        "average_judge_score": average_judge_score,
+        "average_score": round(sum(keyword_scores) / total, 2),
+        "approval_rate": round((approved / total) * 100, 2),
+        "best_score": max(keyword_scores),
+        "lowest_score": min(keyword_scores),
+        "average_judge_score": round(sum(judge_scores) / len(judge_scores), 2)
+        if judge_scores
+        else 0,
     }
 
 
-def generate_dashboard():
-    reports = load_evaluation_reports()
-    metrics = calculate_metrics(reports)
+def generate_prompt_ranking(reports):
+    ranking = []
 
-    html = f"""
+    for report in reports:
+        llm_judge = report.get("llm_judge")
+
+        if not llm_judge:
+            continue
+
+        ranking.append({
+            "prompt": report["prompt"],
+            "judge_score": llm_judge.get("score", "-"),
+            "accuracy": llm_judge.get("accuracy", "-"),
+            "clarity": llm_judge.get("clarity", "-"),
+            "completeness": llm_judge.get("completeness", "-"),
+        })
+
+    ranking.sort(
+        key=lambda item: item["judge_score"]
+        if isinstance(item["judge_score"], int)
+        else 0,
+        reverse=True
+    )
+
+    return ranking
+
+
+def build_header(metrics):
+    return f"""
     <html>
     <head>
         <title>AI Evaluation Dashboard</title>
@@ -86,6 +114,11 @@ def generate_dashboard():
             h1 {{
                 color: #38bdf8;
                 margin-bottom: 8px;
+            }}
+
+            h2 {{
+                color: #38bdf8;
+                margin-top: 50px;
             }}
 
             .subtitle {{
@@ -148,7 +181,7 @@ def generate_dashboard():
 
             table {{
                 width: 100%;
-                margin-top: 40px;
+                margin-top: 24px;
                 border-collapse: collapse;
                 background-color: #1e293b;
                 border-radius: 12px;
@@ -181,6 +214,19 @@ def generate_dashboard():
                 max-width: 420px;
                 color: #cbd5e1;
             }}
+
+            .chart {{
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }}
+
+            .chart img {{
+                width: 100%;
+                max-width: 1000px;
+                border-radius: 12px;
+                background: white;
+                padding: 10px;
+            }}
         </style>
     </head>
 
@@ -193,6 +239,8 @@ def generate_dashboard():
 
         <div class="badge">Evaluation Type: Context-Aware</div>
         <div class="badge">LLM-as-a-Judge Enabled</div>
+        <div class="badge">Prompt Benchmark Ranking Enabled</div>
+        <div class="badge">Model Benchmark Enabled</div>
 
         <div class="cards">
             <div class="card">
@@ -235,6 +283,12 @@ def generate_dashboard():
                 <div class="value warning">{metrics["lowest_score"]}</div>
             </div>
         </div>
+    """
+
+
+def build_evaluation_details_table(reports):
+    html = """
+        <h2>Evaluation Details</h2>
 
         <table>
             <tr>
@@ -251,45 +305,141 @@ def generate_dashboard():
     """
 
     for report in reports:
-        status_class = "approved" if report["evaluation"]["approved"] else "failed"
-        status_text = "APPROVED" if report["evaluation"]["approved"] else "FAILED"
-
+        evaluation = report["evaluation"]
         llm_judge = report.get("llm_judge") or {}
 
-        judge_score = llm_judge.get("score", "-")
-        accuracy = llm_judge.get("accuracy", "-")
-        clarity = llm_judge.get("clarity", "-")
-        completeness = llm_judge.get("completeness", "-")
-        comments = llm_judge.get("comments", "-")
+        status_class = "approved" if evaluation["approved"] else "failed"
+        status_text = "APPROVED" if evaluation["approved"] else "FAILED"
 
         html += f"""
             <tr>
                 <td>{report["timestamp"]}</td>
                 <td>{report["prompt"]}</td>
-                <td>{report["evaluation"]["score"]}/{report["evaluation"]["total_keywords"]}</td>
+                <td>{evaluation["score"]}/{evaluation["total_keywords"]}</td>
                 <td class="{status_class}">{status_text}</td>
-                <td>{judge_score}/10</td>
-                <td>{accuracy}</td>
-                <td>{clarity}</td>
-                <td>{completeness}</td>
-                <td class="comments">{comments}</td>
+                <td>{llm_judge.get("score", "-")}/10</td>
+                <td>{llm_judge.get("accuracy", "-")}</td>
+                <td>{llm_judge.get("clarity", "-")}</td>
+                <td>{llm_judge.get("completeness", "-")}</td>
+                <td class="comments">{llm_judge.get("comments", "-")}</td>
             </tr>
         """
 
     html += """
         </table>
+    """
+
+    return html
+
+
+def build_trend_chart_section():
+    return """
+        <h2>Judge Score Trend</h2>
+
+        <div class="chart">
+            <img
+                src="assets/judge_score_trend.png"
+                alt="Judge Score Trend"
+            >
+        </div>
+    """
+
+
+def build_prompt_ranking_table(ranking):
+    html = """
+        <h2>Prompt Benchmark Ranking</h2>
+
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Prompt</th>
+                <th>Judge Score</th>
+                <th>Accuracy</th>
+                <th>Clarity</th>
+                <th>Completeness</th>
+            </tr>
+    """
+
+    for position, item in enumerate(ranking, start=1):
+        html += f"""
+            <tr>
+                <td>{position}</td>
+                <td>{item["prompt"]}</td>
+                <td>{item["judge_score"]}/10</td>
+                <td>{item["accuracy"]}</td>
+                <td>{item["clarity"]}</td>
+                <td>{item["completeness"]}</td>
+            </tr>
+        """
+
+    html += """
+        </table>
+    """
+
+    return html
+
+
+def build_model_benchmark_table(benchmark_reports):
+    html = """
+        <h2>Model Benchmark Ranking</h2>
+
+        <table>
+            <tr>
+                <th>Timestamp</th>
+                <th>Model</th>
+                <th>Judge Score</th>
+                <th>Accuracy</th>
+                <th>Clarity</th>
+                <th>Completeness</th>
+            </tr>
+    """
+
+    for benchmark_report in benchmark_reports:
+        timestamp = benchmark_report["timestamp"]
+
+        for result in benchmark_report["results"]:
+            html += f"""
+                <tr>
+                    <td>{timestamp}</td>
+                    <td>{result["model"]}</td>
+                    <td>{result["judge_score"]}/10</td>
+                    <td>{result["accuracy"]}</td>
+                    <td>{result["clarity"]}</td>
+                    <td>{result["completeness"]}</td>
+                </tr>
+            """
+
+    html += """
+        </table>
+    """
+
+    return html
+
+
+def generate_dashboard():
+    reports = load_evaluation_reports()
+    benchmark_reports = load_model_benchmark_reports()
+
+    metrics = calculate_metrics(reports)
+    prompt_ranking = generate_prompt_ranking(reports)
+
+    html = build_header(metrics)
+    html += build_evaluation_details_table(reports)
+    html += build_trend_chart_section()
+    html += build_prompt_ranking_table(prompt_ranking)
+    html += build_model_benchmark_table(benchmark_reports)
+
+    html += """
     </body>
     </html>
     """
 
     os.makedirs("dashboard", exist_ok=True)
 
-    output_path = "dashboard/evaluation_dashboard.html"
-
-    with open(output_path, "w", encoding="utf-8") as file:
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as file:
         file.write(html)
 
-    print(f"Dashboard generated: {output_path}")
+    print(f"Dashboard generated: {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":

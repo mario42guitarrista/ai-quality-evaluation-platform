@@ -9,10 +9,13 @@ client = OpenAI(
 )
 
 
-def generate_ai_response(prompt):
+def generate_ai_response(
+    prompt,
+    model="gpt-4.1-mini"
+):
 
     response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+        model=model,
         messages=[
             {
                 "role": "user",

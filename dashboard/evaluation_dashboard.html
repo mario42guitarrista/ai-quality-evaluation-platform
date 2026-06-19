@@ -15,6 +15,11 @@
                 margin-bottom: 8px;
             }
 
+            h2 {
+                color: #38bdf8;
+                margin-top: 50px;
+            }
+
             .subtitle {
                 color: #cbd5e1;
                 font-size: 18px;
@@ -75,7 +80,7 @@
 
             table {
                 width: 100%;
-                margin-top: 40px;
+                margin-top: 24px;
                 border-collapse: collapse;
                 background-color: #1e293b;
                 border-radius: 12px;
@@ -108,6 +113,19 @@
                 max-width: 420px;
                 color: #cbd5e1;
             }
+
+            .chart {
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+
+            .chart img {
+                width: 100%;
+                max-width: 1000px;
+                border-radius: 12px;
+                background: white;
+                padding: 10px;
+            }
         </style>
     </head>
 
@@ -120,6 +138,8 @@
 
         <div class="badge">Evaluation Type: Context-Aware</div>
         <div class="badge">LLM-as-a-Judge Enabled</div>
+        <div class="badge">Prompt Benchmark Ranking Enabled</div>
+        <div class="badge">Model Benchmark Enabled</div>
 
         <div class="cards">
             <div class="card">
@@ -162,6 +182,8 @@
                 <div class="value warning">1</div>
             </div>
         </div>
+    
+        <h2>Evaluation Details</h2>
 
         <table>
             <tr>
@@ -369,6 +391,125 @@
             </tr>
         
         </table>
+    
+        <h2>Judge Score Trend</h2>
+
+        <div class="chart">
+            <img
+                src="assets/judge_score_trend.png"
+                alt="Judge Score Trend"
+            >
+        </div>
+    
+        <h2>Prompt Benchmark Ranking</h2>
+
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Prompt</th>
+                <th>Judge Score</th>
+                <th>Accuracy</th>
+                <th>Clarity</th>
+                <th>Completeness</th>
+            </tr>
+    
+            <tr>
+                <td>1</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>8</td>
+            </tr>
+        
+            <tr>
+                <td>2</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>8</td>
+            </tr>
+        
+            <tr>
+                <td>3</td>
+                <td>Explain API testing in simple terms.</td>
+                <td>8/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>7</td>
+            </tr>
+        
+            <tr>
+                <td>4</td>
+                <td>Explain DevOps in simple terms.</td>
+                <td>8/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>7</td>
+            </tr>
+        
+            <tr>
+                <td>5</td>
+                <td>Explain Quality Engineering in simple terms.</td>
+                <td>7/10</td>
+                <td>8</td>
+                <td>8</td>
+                <td>5</td>
+            </tr>
+        
+        </table>
+    
+        <h2>Model Benchmark Ranking</h2>
+
+        <table>
+            <tr>
+                <th>Timestamp</th>
+                <th>Model</th>
+                <th>Judge Score</th>
+                <th>Accuracy</th>
+                <th>Clarity</th>
+                <th>Completeness</th>
+            </tr>
+    
+                <tr>
+                    <td>20260609_174125</td>
+                    <td>gpt-4.1-mini</td>
+                    <td>9/10</td>
+                    <td>9</td>
+                    <td>9</td>
+                    <td>8</td>
+                </tr>
+            
+                <tr>
+                    <td>20260609_174125</td>
+                    <td>gpt-4.1</td>
+                    <td>9/10</td>
+                    <td>9</td>
+                    <td>9</td>
+                    <td>8</td>
+                </tr>
+            
+                <tr>
+                    <td>20260610_095926</td>
+                    <td>gpt-4.1-mini</td>
+                    <td>9/10</td>
+                    <td>9</td>
+                    <td>9</td>
+                    <td>8</td>
+                </tr>
+            
+                <tr>
+                    <td>20260610_095926</td>
+                    <td>gpt-4.1</td>
+                    <td>9/10</td>
+                    <td>9</td>
+                    <td>9</td>
+                    <td>9</td>
+                </tr>
+            
+        </table>
+    
     </body>
     </html>
     
