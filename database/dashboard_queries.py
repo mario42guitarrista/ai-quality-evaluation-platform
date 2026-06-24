@@ -94,6 +94,41 @@ def get_evaluation_details(limit=20):
         ORDER BY id DESC
         LIMIT {limit}
     """)
+def get_best_prompt():
+    return execute_query("""
+        SELECT prompt,
+               ROUND(AVG(judge_score), 2) AS avg_score
+        FROM evaluations
+        GROUP BY prompt
+        ORDER BY avg_score DESC
+        LIMIT 1
+    """)[0]
+
+
+def get_worst_prompt():
+    return execute_query("""
+        SELECT prompt,
+               ROUND(AVG(judge_score), 2) AS avg_score
+        FROM evaluations
+        GROUP BY prompt
+        ORDER BY avg_score ASC
+        LIMIT 1
+    """)[0]
+
+
+def get_quality_dimension_averages():
+    result = execute_query("""
+        SELECT ROUND(AVG(accuracy), 2),
+               ROUND(AVG(clarity), 2),
+               ROUND(AVG(completeness), 2)
+        FROM evaluations
+    """)[0]
+
+    return {
+        "average_accuracy": result[0],
+        "average_clarity": result[1],
+        "average_completeness": result[2],
+    }    
 
 
 if __name__ == "__main__":

@@ -4,7 +4,10 @@ import os
 from database.dashboard_queries import (
     get_dashboard_metrics,
     get_top_prompts,
-    get_evaluation_details
+    get_evaluation_details,
+    get_best_prompt,
+    get_worst_prompt,
+    get_quality_dimension_averages
 )
 
 MODEL_BENCHMARKS_PATH = "reports/model_benchmarks"
@@ -27,7 +30,7 @@ def load_model_benchmark_reports():
     return reports
 
 
-def build_header(metrics):
+def build_header(metrics, best_prompt, worst_prompt, quality_averages):
     return f"""
     <html>
     <head>
@@ -173,6 +176,40 @@ def build_header(metrics):
                 <div class="label">Lowest Judge Score</div>
                 <div class="value warning">{metrics["lowest_score"]}</div>
             </div>
+                        <div class="card">
+                <div class="label">Best Prompt</div>
+                <div class="value success" style="font-size:18px;">
+                    {best_prompt[0]}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label">Worst Prompt</div>
+                <div class="value warning" style="font-size:18px;">
+                    {worst_prompt[0]}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label">Avg Accuracy</div>
+                <div class="value info">
+                    {quality_averages["average_accuracy"]}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label">Avg Clarity</div>
+                <div class="value info">
+                    {quality_averages["average_clarity"]}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label">Avg Completeness</div>
+                <div class="value info">
+                    {quality_averages["average_completeness"]}
+                </div>
+            </div>
         </div>
     """
 
@@ -303,7 +340,16 @@ def generate_dashboard():
     evaluation_details = get_evaluation_details()
     benchmark_reports = load_model_benchmark_reports()
 
-    html = build_header(metrics)
+    best_prompt = get_best_prompt()
+    worst_prompt = get_worst_prompt()
+    quality_averages = get_quality_dimension_averages()
+
+    html = build_header(
+    metrics,
+    best_prompt,
+    worst_prompt,
+    quality_averages
+    )
     html += build_evaluation_details_table(evaluation_details)
     html += build_trend_chart_section()
     html += build_prompt_ranking_table(top_prompts)
