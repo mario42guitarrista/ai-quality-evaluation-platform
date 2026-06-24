@@ -1,5 +1,7 @@
 __pycache__/
 venv/
 .env
-reports/
+reports/evaluations/
+reports/model_benchmarks/
+reports/executive/*.pdf
 *.pyc
