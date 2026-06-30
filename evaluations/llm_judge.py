@@ -1,6 +1,6 @@
 import json
 from urllib import response
-from utils.openai_client import generate_ai_response
+from services.llm_service import generate_response_with_provider
 
 
 def evaluate_with_llm_judge(answer):
@@ -32,7 +32,11 @@ Answer:
 {answer}
 """
 
-    response = generate_ai_response(judge_prompt)
+    response = generate_response_with_provider(
+    prompt=judge_prompt,
+    provider_name="openai",
+    model="gpt-4.1-mini"
+    )
     
     print("\nRAW JUDGE RESPONSE:\n")
     print(response)

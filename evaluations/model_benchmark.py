@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-from utils.openai_client import generate_ai_response
+from services.llm_service import generate_response_with_provider
 from evaluations.llm_judge import evaluate_with_llm_judge
 
 
@@ -45,9 +45,10 @@ def run_model_benchmark():
 
         print(f"\nTesting model: {model}")
 
-        response = generate_ai_response(
-            PROMPT,
-            model=model
+        response = generate_response_with_provider(
+        prompt=PROMPT,
+        provider_name="openai",
+        model=model
         )
 
         judge = evaluate_with_llm_judge(

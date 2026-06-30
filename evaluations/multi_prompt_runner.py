@@ -1,5 +1,5 @@
 from utils.prompt_loader import load_prompts_from_folder
-from utils.openai_client import generate_ai_response
+from services.llm_service import generate_response_with_provider
 from evaluations.response_evaluator import evaluate_response
 from evaluations.llm_judge import evaluate_with_llm_judge
 from utils.evaluation_reporter import save_evaluation_report
@@ -17,7 +17,11 @@ def run_multi_prompt_evaluation():
 
         print(f"\nRunning evaluation for: {prompt_name}")
 
-        response = generate_ai_response(prompt)
+        response = generate_response_with_provider(
+        prompt=prompt,
+        provider_name="openai",
+        model="gpt-4.1-mini"
+        )
 
         evaluation = evaluate_response(
             response=response,
