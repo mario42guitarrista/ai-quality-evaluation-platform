@@ -1,26 +1,106 @@
 # AI Quality Evaluation Platform
 
-AI Quality Evaluation Platform é um projeto focado em avaliação, observabilidade e benchmarking de respostas geradas por Large Language Models (LLMs).
+An AI Quality Engineering platform designed to evaluate, benchmark, monitor, and report the quality of Large Language Model (LLM) responses.
 
-O objetivo é simular uma plataforma real de AI Quality Engineering capaz de executar prompts, avaliar respostas automaticamente, gerar relatórios estruturados e disponibilizar dashboards para análise da qualidade dos resultados.
+This project simulates a real-world AI Quality Engineering workflow by combining automated prompt evaluation, semantic assessment using LLM-as-a-Judge, benchmarking, SQL analytics, dashboards, executive reporting, and CI/CD automation.
+
+The primary goal is not only to consume AI models, but to build an engineering platform capable of continuously measuring, comparing, and improving the quality of AI-generated responses using software engineering best practices.
 
 ---
 
-# Features
+## Project Goals
+
+The platform aims to:
+
+- Evaluate AI-generated responses using both keyword-based and semantic evaluation.
+- Benchmark multiple LLM models using standardized prompts.
+- Store historical evaluation data for SQL analytics.
+- Generate dashboards and executive reports automatically.
+- Apply AI Quality Engineering and Observability concepts.
+- Simulate production-grade software engineering practices.
+
+---
+
+# Roadmap
+
+## Completed
+
+- OpenAI Integration
+- Context-Aware Evaluation
+- LLM-as-a-Judge
+- Prompt Benchmark
+- Model Benchmark
+- SQLite Analytics
+- SQL Dashboard
+- Executive PDF Reports
+- GitHub Actions CI/CD
+- Provider-Based Architecture
+
+## In Progress
+
+- Multi-Provider Support
+
+## Planned
+
+- Gemini Provider
+- Claude Provider
+- Ollama Provider
+- Latency Analytics
+- Cost Analytics
+- REST API
+- Docker Deployment
+- Streamlit Dashboard
+
+---
+
+## Key Features
 
 ## OpenAI Integration
 
-- Integração com OpenAI API
-- Execução automática de prompts
-- Geração de respostas via LLM
+- Integration with OpenAI API
+- Automatic prompt execution
+- AI-generated responses
+
+---
+
+# Technology Stack
+
+- Python
+- OpenAI API
+- SQLite
+- SQL
+- Pytest
+- ReportLab
+- Matplotlib
+- HTML
+- CSS
+- GitHub Actions
+- JSON
+
+---
+
+## Provider-Based Architecture
+
+The platform now uses a provider abstraction layer that decouples the evaluation engine from a specific LLM vendor.The architecture follows the Dependency Inversion Principle, allowing new providers to be added without modifying the evaluation engine.
+
+Current provider:
+
+- OpenAI
+
+Planned providers:
+
+- Gemini
+- Claude
+- Ollama
+- Azure OpenAI
 
 ---
 
 ## Context-Aware Evaluation
 
-Avaliação baseada em critérios específicos para cada prompt.
+Evaluation based on predefined criteria for each prompt.
 
-Exemplo:
+Example:
 
 ```json
 {
@@ -33,269 +113,91 @@ Exemplo:
     "python"
   ]
 }
-```
 
----
+```
 
 ## LLM-as-a-Judge
 
-Além da avaliação por keywords, uma segunda chamada ao modelo realiza avaliação semântica baseada em:
+A second LLM evaluates the generated response using semantic criteria:
 
 - Accuracy
 - Clarity
 - Completeness
 
-Exemplo:
-
-```json
-{
-  "score": 9,
-  "accuracy": 9,
-  "clarity": 9,
-  "completeness": 8,
-  "comments": "Clear and accurate answer."
-}
-```
-
----
-
-## Evaluation Reports
-
-Cada execução gera relatórios JSON estruturados.
-
-Exemplo:
-
-```json
-{
-  "prompt": "...",
-  "response": "...",
-  "evaluation": {
-    "score": 4
-  },
-  "llm_judge": {
-    "score": 9,
-    "accuracy": 9,
-    "clarity": 9,
-    "completeness": 8
-  }
-}
-```
-
 ---
 
 ## Prompt Benchmark Ranking
 
-Ranking automático dos prompts baseado no Judge Score.
-
-Exemplo:
-
-| Rank | Prompt | Judge Score |
-|--------|--------|--------|
-| 1 | CI/CD | 9 |
-| 2 | Python Functions | 9 |
-| 3 | API Testing | 8 |
-| 4 | DevOps | 8 |
-| 5 | Quality Engineering | 7 |
+Automatic prompt ranking based on Judge Score.
 
 ---
 
-## Historical Trends
+## Model Benchmark
+Supports benchmarking across different LLM models while keeping the same evaluation criteria, enabling objective comparison between models.
+Compare different LLM models using the same prompt and evaluate:
 
-Geração automática de gráficos para análise histórica dos resultados.
+- Judge Score
+- Accuracy
+- Clarity
+- Completeness
 
-Métricas monitoradas:
+---
 
-- Judge Score Trend
-- Evolução das execuções
-- Benchmark histórico
+## SQLite Analytics
+
+Evaluation results are automatically stored in SQLite for historical analysis.
+
+Available analytics:
+
+- Approval Rate
+- Average Judge Score
+- Prompt Ranking
+- Evaluation History
+- SQL Queries
+- Historical Metrics
+
+---
+
+## Executive PDF Reports
+
+Automatically generates executive reports including:
+
+- Executive Summary
+- Prompt Ranking
+- Model Benchmark
+- Historical Trend Chart
 
 ---
 
 ## AI Observability Dashboard
 
-Dashboard HTML contendo:
+Interactive HTML dashboard displaying:
 
 - Total Evaluations
-- Approved
-- Failed
 - Approval Rate
-- Keyword Average Score
 - Judge Average Score
-- Best Score
-- Lowest Score
-- Evaluation Details
 - Prompt Benchmark Ranking
-- Historical Trends
+- Model Benchmark Ranking
+- Historical Trend
+- SQLite Analytics
 
 ---
 
-# Project Structure
+## GitHub Actions CI/CD
 
-```text
-ai-quality-evaluation-platform/
-│
-├── dashboard/
-│   ├── assets/
-│   ├── evaluation_dashboard.html
-│   ├── evaluation_dashboard_generator.py
-│   ├── generate_trend_chart.py
-│   └── prompt_benchmark.py
-│
-├── evaluations/
-│   ├── llm_judge.py
-│   ├── multi_prompt_runner.py
-│   └── response_evaluator.py
-│
-├── prompts/
-│   ├── api_testing.json
-│   ├── ci_cd.json
-│   ├── devops.json
-│   ├── python_basics.json
-│   └── quality_engineering.json
-│
-├── reports/
-│   └── evaluations/
-│
-├── tests/
-│   ├── test_ai_evaluation.py
-│   ├── test_llm_judge.py
-│   └── test_openai_connection.py
-│
-├── utils/
-│   ├── evaluation_reporter.py
-│   ├── openai_client.py
-│   └── prompt_loader.py
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
+Automated pipeline that:
 
----
-
-# Installation
-
-Clone o projeto:
-
-```bash
-git clone <repository-url>
-cd ai-quality-evaluation-platform
-```
-
-Crie o ambiente virtual:
-
-```bash
-python -m venv venv
-```
-
-Ative o ambiente:
-
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-Linux/Mac:
-
-```bash
-source venv/bin/activate
-```
-
-Instale dependências:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# Environment Variables
-
-Crie um arquivo:
-
-```text
-.env
-```
-
-Conteúdo:
-
-```env
-OPENAI_API_KEY=your_api_key
-```
-
----
-
-# Running Evaluations
-
-Executar benchmark completo:
-
-```bash
-python -m evaluations.multi_prompt_runner
-```
-
----
-
-# Generate Dashboard
-
-Gerar gráfico:
-
-```bash
-python dashboard/generate_trend_chart.py
-```
-
-Gerar dashboard:
-
-```bash
-python dashboard/evaluation_dashboard_generator.py
-```
-
-Abrir dashboard:
-
-```bash
-start dashboard/evaluation_dashboard.html
-```
-
----
-
-# Roadmap
-
-## Completed
-
-- Foundation
-- OpenAI Integration
-- Evaluation Engine
-- Context-Aware Evaluation
-- LLM-as-a-Judge
-- Dashboard
-- Prompt Benchmark Ranking
-- Historical Trends
-
-## Next Steps
-
-- Multi Model Benchmark
-- Executive PDF Reports
-- GitHub Actions Integration
-- Model Comparison Dashboard
-- Evaluation API
-- Streamlit Dashboard
-
----
-
-# Technologies
-
-- Python
-- OpenAI API
-- Pytest
-- JSON
-- Matplotlib
-- HTML
-- CSS
-
----
+- Runs tests
+- Executes evaluations
+- Generates dashboards
+- Creates executive PDF reports
+- Uploads artifacts
 
 # Author
 
-Mario Lima
+**Mario Lima**
 
-AI Quality Evaluation Platform
+Quality Assurance Engineer | AI Quality Engineering | Test Automation | Python
+
+GitHub:
+https://github.com/mario42guitarrista/ai-quality-evaluation-platform
