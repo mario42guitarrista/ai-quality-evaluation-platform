@@ -21,9 +21,11 @@ def save_evaluation_to_db(report):
             accuracy,
             clarity,
             completeness,
-            approved
+            approved,
+            provider,
+            model
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             report["timestamp"],
@@ -33,7 +35,9 @@ def save_evaluation_to_db(report):
             llm_judge.get("accuracy"),
             llm_judge.get("clarity"),
             llm_judge.get("completeness"),
-            1 if evaluation["approved"] else 0
+            1 if evaluation["approved"] else 0,
+            report.get("provider", "openai"),
+            report.get("model", "gpt-4.1-mini")
         )
     )
 

@@ -102,16 +102,17 @@
         <div class="badge">SQL Analytics Enabled</div>
         <div class="badge">LLM-as-a-Judge Enabled</div>
         <div class="badge">Model Benchmark Enabled</div>
+        <div class="badge">Provider Comparison Enabled</div>
 
         <div class="cards">
             <div class="card">
                 <div class="label">Total Evaluations</div>
-                <div class="value info">5</div>
+                <div class="value info">15</div>
             </div>
 
             <div class="card">
                 <div class="label">Approved</div>
-                <div class="value success">5</div>
+                <div class="value success">15</div>
             </div>
 
             <div class="card">
@@ -121,12 +122,12 @@
 
             <div class="card">
                 <div class="label">Keyword Avg Score</div>
-                <div class="value info">3.4</div>
+                <div class="value info">3.27</div>
             </div>
 
             <div class="card">
                 <div class="label">Judge Avg Score</div>
-                <div class="value success">8.2</div>
+                <div class="value success">8.07</div>
             </div>
 
             <div class="card">
@@ -143,7 +144,8 @@
                 <div class="label">Lowest Judge Score</div>
                 <div class="value warning">7</div>
             </div>
-                        <div class="card">
+
+            <div class="card">
                 <div class="label">Best Prompt</div>
                 <div class="value success" style="font-size:18px;">
                     Explain Python functions in simple terms.
@@ -160,25 +162,48 @@
             <div class="card">
                 <div class="label">Avg Accuracy</div>
                 <div class="value info">
-                    8.8
+                    8.73
                 </div>
             </div>
 
             <div class="card">
                 <div class="label">Avg Clarity</div>
                 <div class="value info">
-                    8.8
+                    8.67
                 </div>
             </div>
 
             <div class="card">
                 <div class="label">Avg Completeness</div>
                 <div class="value info">
-                    7.0
+                    6.93
                 </div>
             </div>
         </div>
     
+        <h2>Provider Comparison</h2>
+
+        <table>
+            <tr>
+                <th>Provider</th>
+                <th>Model</th>
+                <th>Total Evaluations</th>
+                <th>Avg Judge Score</th>
+                <th>Avg Accuracy</th>
+                <th>Avg Clarity</th>
+                <th>Avg Completeness</th>
+            </tr>
+    
+            <tr>
+                <td>openai</td>
+                <td>gpt-4.1-mini</td>
+                <td>15</td>
+                <td>8.07/10</td>
+                <td>8.73</td>
+                <td>8.67</td>
+                <td>6.93</td>
+            </tr>
+        </table>
         <h2>Evaluation Details</h2>
 
         <table>
@@ -193,6 +218,116 @@
                 <th>Completeness</th>
             </tr>
     
+            <tr>
+                <td>20260701_181043</td>
+                <td>Explain Quality Engineering in simple terms.</td>
+                <td>3</td>
+                <td class="approved">APPROVED</td>
+                <td>7/10</td>
+                <td>8</td>
+                <td>8</td>
+                <td>6</td>
+            </tr>
+        
+            <tr>
+                <td>20260701_181039</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>5</td>
+                <td class="approved">APPROVED</td>
+                <td>9/10</td>
+                <td>10</td>
+                <td>9</td>
+                <td>8</td>
+            </tr>
+        
+            <tr>
+                <td>20260701_181027</td>
+                <td>Explain DevOps in simple terms.</td>
+                <td>3</td>
+                <td class="approved">APPROVED</td>
+                <td>8/10</td>
+                <td>8</td>
+                <td>9</td>
+                <td>7</td>
+            </tr>
+        
+            <tr>
+                <td>20260701_181022</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>3</td>
+                <td class="approved">APPROVED</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>8</td>
+            </tr>
+        
+            <tr>
+                <td>20260701_181018</td>
+                <td>Explain API testing in simple terms.</td>
+                <td>3</td>
+                <td class="approved">APPROVED</td>
+                <td>7/10</td>
+                <td>8</td>
+                <td>7</td>
+                <td>6</td>
+            </tr>
+        
+            <tr>
+                <td>20260630_165456</td>
+                <td>Explain Quality Engineering in simple terms.</td>
+                <td>2</td>
+                <td class="approved">APPROVED</td>
+                <td>7/10</td>
+                <td>8</td>
+                <td>8</td>
+                <td>6</td>
+            </tr>
+        
+            <tr>
+                <td>20260630_165452</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>5</td>
+                <td class="approved">APPROVED</td>
+                <td>9/10</td>
+                <td>10</td>
+                <td>9</td>
+                <td>8</td>
+            </tr>
+        
+            <tr>
+                <td>20260630_165445</td>
+                <td>Explain DevOps in simple terms.</td>
+                <td>2</td>
+                <td class="approved">APPROVED</td>
+                <td>8/10</td>
+                <td>9</td>
+                <td>9</td>
+                <td>7</td>
+            </tr>
+        
+            <tr>
+                <td>20260630_165440</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>3</td>
+                <td class="approved">APPROVED</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>10</td>
+                <td>8</td>
+            </tr>
+        
+            <tr>
+                <td>20260630_165432</td>
+                <td>Explain API testing in simple terms.</td>
+                <td>3</td>
+                <td class="approved">APPROVED</td>
+                <td>7/10</td>
+                <td>8</td>
+                <td>8</td>
+                <td>5</td>
+            </tr>
+        
             <tr>
                 <td>20260617_162039</td>
                 <td>Explain Quality Engineering in simple terms.</td>
@@ -289,29 +424,29 @@
         
             <tr>
                 <td>3</td>
-                <td>Explain API testing in simple terms.</td>
-                <td>8/10</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>9/10</td>
                 <td>9</td>
-                <td>9</td>
-                <td>6</td>
+                <td>10</td>
+                <td>8</td>
             </tr>
         
             <tr>
                 <td>4</td>
-                <td>Explain DevOps in simple terms.</td>
-                <td>8/10</td>
+                <td>Explain Python functions in simple terms.</td>
+                <td>9/10</td>
+                <td>10</td>
                 <td>9</td>
-                <td>9</td>
-                <td>7</td>
+                <td>8</td>
             </tr>
         
             <tr>
                 <td>5</td>
-                <td>Explain Quality Engineering in simple terms.</td>
-                <td>7/10</td>
-                <td>7</td>
+                <td>Explain CI/CD in simple terms.</td>
+                <td>9/10</td>
+                <td>9</td>
+                <td>9</td>
                 <td>8</td>
-                <td>6</td>
             </tr>
         </table>
         <h2>Model Benchmark Ranking</h2>
@@ -360,6 +495,24 @@
                     <td>9</td>
                     <td>9</td>
                     <td>9</td>
+                </tr>
+            
+                <tr>
+                    <td>20260630_165652</td>
+                    <td>gpt-4.1-mini</td>
+                    <td>9/10</td>
+                    <td>9</td>
+                    <td>9</td>
+                    <td>8</td>
+                </tr>
+            
+                <tr>
+                    <td>20260630_165652</td>
+                    <td>gpt-4.1</td>
+                    <td>9/10</td>
+                    <td>9</td>
+                    <td>9</td>
+                    <td>8</td>
                 </tr>
             </table>
     </body>

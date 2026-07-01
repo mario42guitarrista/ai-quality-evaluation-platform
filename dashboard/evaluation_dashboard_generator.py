@@ -7,8 +7,10 @@ from database.dashboard_queries import (
     get_evaluation_details,
     get_best_prompt,
     get_worst_prompt,
-    get_quality_dimension_averages
+    get_quality_dimension_averages,
+    get_provider_comparison
 )
+
 
 MODEL_BENCHMARKS_PATH = "reports/model_benchmarks"
 OUTPUT_PATH = "dashboard/evaluation_dashboard.html"
@@ -135,6 +137,7 @@ def build_header(metrics, best_prompt, worst_prompt, quality_averages):
         <div class="badge">SQL Analytics Enabled</div>
         <div class="badge">LLM-as-a-Judge Enabled</div>
         <div class="badge">Model Benchmark Enabled</div>
+        <div class="badge">Provider Comparison Enabled</div>
 
         <div class="cards">
             <div class="card">
@@ -176,7 +179,8 @@ def build_header(metrics, best_prompt, worst_prompt, quality_averages):
                 <div class="label">Lowest Judge Score</div>
                 <div class="value warning">{metrics["lowest_score"]}</div>
             </div>
-                        <div class="card">
+
+            <div class="card">
                 <div class="label">Best Prompt</div>
                 <div class="value success" style="font-size:18px;">
                     {best_prompt[0]}
@@ -212,6 +216,49 @@ def build_header(metrics, best_prompt, worst_prompt, quality_averages):
             </div>
         </div>
     """
+
+
+def build_provider_comparison_table(provider_comparison):
+    html = """
+        <h2>Provider Comparison</h2>
+
+        <table>
+            <tr>
+                <th>Provider</th>
+                <th>Model</th>
+                <th>Total Evaluations</th>
+                <th>Avg Judge Score</th>
+                <th>Avg Accuracy</th>
+                <th>Avg Clarity</th>
+                <th>Avg Completeness</th>
+            </tr>
+    """
+
+    for row in provider_comparison:
+        (
+            provider,
+            model,
+            total_evaluations,
+            average_judge_score,
+            average_accuracy,
+            average_clarity,
+            average_completeness
+        ) = row
+
+        html += f"""
+            <tr>
+                <td>{provider}</td>
+                <td>{model}</td>
+                <td>{total_evaluations}</td>
+                <td>{average_judge_score}/10</td>
+                <td>{average_accuracy}</td>
+                <td>{average_clarity}</td>
+                <td>{average_completeness}</td>
+            </tr>
+        """
+
+    html += "</table>"
+    return html
 
 
 def build_evaluation_details_table(evaluation_details):
@@ -339,17 +386,20 @@ def generate_dashboard():
     top_prompts = get_top_prompts()
     evaluation_details = get_evaluation_details()
     benchmark_reports = load_model_benchmark_reports()
+    provider_comparison = get_provider_comparison()
 
     best_prompt = get_best_prompt()
     worst_prompt = get_worst_prompt()
     quality_averages = get_quality_dimension_averages()
 
     html = build_header(
-    metrics,
-    best_prompt,
-    worst_prompt,
-    quality_averages
+        metrics,
+        best_prompt,
+        worst_prompt,
+        quality_averages
     )
+
+    html += build_provider_comparison_table(provider_comparison)
     html += build_evaluation_details_table(evaluation_details)
     html += build_trend_chart_section()
     html += build_prompt_ranking_table(top_prompts)

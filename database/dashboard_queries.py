@@ -129,7 +129,22 @@ def get_quality_dimension_averages():
         "average_clarity": result[1],
         "average_completeness": result[2],
     }    
+def get_provider_comparison():
+    query = """
+        SELECT
+            provider,
+            model,
+            COUNT(*) AS total_evaluations,
+            ROUND(AVG(judge_score), 2) AS average_judge_score,
+            ROUND(AVG(accuracy), 2) AS average_accuracy,
+            ROUND(AVG(clarity), 2) AS average_clarity,
+            ROUND(AVG(completeness), 2) AS average_completeness
+        FROM evaluations
+        GROUP BY provider, model
+        ORDER BY average_judge_score DESC
+    """
 
+    return execute_query(query)
 
 if __name__ == "__main__":
     print(get_dashboard_metrics())

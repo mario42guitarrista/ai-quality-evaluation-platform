@@ -15,7 +15,9 @@ def save_evaluation_report(prompt, response, evaluation, llm_judge=None):
         "prompt": prompt,
         "response": response,
         "evaluation": evaluation,
-        "llm_judge": llm_judge
+        "llm_judge": llm_judge,
+        "provider": "openai",
+        "model": "gpt-4.1-mini"
     }
 
     file_path = f"reports/evaluations/evaluation_{timestamp}.json"
