@@ -1,4 +1,4 @@
-from providers.openai_provider import OpenAIProvider
+from providers.provider_factory import get_provider
 
 
 def generate_response_with_provider(
@@ -6,9 +6,9 @@ def generate_response_with_provider(
     provider_name: str = "openai",
     model: str = "gpt-4.1-mini"
 ) -> str:
+    provider = get_provider(
+        provider_name=provider_name,
+        model=model
+    )
 
-    if provider_name == "openai":
-        provider = OpenAIProvider(model=model)
-        return provider.generate_response(prompt)
-
-    raise ValueError(f"Provider not supported: {provider_name}")
+    return provider.generate_response(prompt)
