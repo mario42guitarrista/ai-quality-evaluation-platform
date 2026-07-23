@@ -1,8 +1,10 @@
+from providers.mock_provider import MockProvider
 from providers.openai_provider import OpenAIProvider
 
 
 PROVIDERS = {
-    "openai": OpenAIProvider
+    "openai": OpenAIProvider,
+    "mock": MockProvider
 }
 
 

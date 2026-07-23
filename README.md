@@ -35,10 +35,13 @@ The platform aims to:
 - Executive PDF Reports
 - GitHub Actions CI/CD
 - Provider-Based Architecture
+- Provider Factory
+- Mock Provider
+- Multi-Provider Service Integration
 
 ## In Progress
 
-- Multi-Provider Support
+- Multi-Provider Comparison
 
 ## Planned
 
@@ -81,11 +84,22 @@ The platform aims to:
 
 ## Provider-Based Architecture
 
-The platform now uses a provider abstraction layer that decouples the evaluation engine from a specific LLM vendor.The architecture follows the Dependency Inversion Principle, allowing new providers to be added without modifying the evaluation engine.
+The platform uses a provider abstraction layer that decouples the evaluation engine from a specific LLM vendor. The architecture follows the Dependency Inversion Principle, allowing new providers to be added without changing the main evaluation workflow.
 
-Current provider:
+Architecture components:
+
+- `BaseLLMProvider`: defines the common provider interface
+- `OpenAIProvider`: handles real OpenAI API requests
+- `MockProvider`: generates deterministic responses without external API calls
+- `Provider Factory`: creates providers dynamically by name
+- `LLMService`: executes prompts without depending on provider implementations
+
+Available providers:
 
 - OpenAI
+- Mock
+
+The Mock Provider allows the service and provider architecture to be tested without consuming API credits. The current automated test suite contains eight passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, provider selection, mock behavior, and unsupported-provider handling.
 
 Planned providers:
 
