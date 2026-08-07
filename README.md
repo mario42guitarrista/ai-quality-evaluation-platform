@@ -26,6 +26,7 @@ The platform aims to:
 ## Completed
 
 - OpenAI Integration
+- Gemini Integration
 - Context-Aware Evaluation
 - LLM-as-a-Judge
 - Prompt Benchmark
@@ -38,17 +39,20 @@ The platform aims to:
 - Provider Factory
 - Mock Provider
 - Multi-Provider Service Integration
+- Real Multi-Provider Comparison
+- Provider Latency Measurement
+- Failure-Isolated Provider Execution
+- JSON Comparison Reports
 
 ## In Progress
 
-- Multi-Provider Comparison
+- Multi-Run Provider Benchmarking
 
 ## Planned
 
-- Gemini Provider
 - Claude Provider
 - Ollama Provider
-- Latency Analytics
+- Aggregated Latency Analytics
 - Cost Analytics
 - REST API
 - Docker Deployment
@@ -58,9 +62,11 @@ The platform aims to:
 
 ## Key Features
 
-## OpenAI Integration
+## Multi-Provider API Integration
 
-- Integration with OpenAI API
+- OpenAI API integration
+- Gemini API integration through the Google GenAI SDK
+- Dynamic provider and model selection
 - Automatic prompt execution
 - AI-generated responses
 
@@ -70,6 +76,8 @@ The platform aims to:
 
 - Python
 - OpenAI API
+- Gemini API
+- Google GenAI SDK
 - SQLite
 - SQL
 - Pytest
@@ -90,23 +98,61 @@ Architecture components:
 
 - `BaseLLMProvider`: defines the common provider interface
 - `OpenAIProvider`: handles real OpenAI API requests
+- `GeminiProvider`: handles real Gemini API requests through the Google GenAI SDK
 - `MockProvider`: generates deterministic responses without external API calls
 - `Provider Factory`: creates providers dynamically by name
 - `LLMService`: executes prompts without depending on provider implementations
+- `MultiProviderComparisonService`: executes the same prompt across multiple providers, measures latency, and isolates failures
 
 Available providers:
 
 - OpenAI
+- Gemini
 - Mock
 
-The Mock Provider allows the service and provider architecture to be tested without consuming API credits. The current automated test suite contains eight passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, provider selection, mock behavior, and unsupported-provider handling.
+The Mock Provider allows the service and provider architecture to be tested without consuming API credits. The automated test suite currently contains 16 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, comparison execution, latency measurement, failure isolation, and unsupported-provider handling.
 
 Planned providers:
 
-- Gemini
 - Claude
 - Ollama
 - Azure OpenAI
+
+---
+
+## Multi-Provider Comparison
+
+The platform can execute the same prompt across different LLM providers through a single comparison service.
+
+Comparison capabilities:
+
+- Dynamic provider and model selection
+- Identical prompt execution across providers
+- Per-provider latency measurement
+- Independent success and error tracking
+- Failure isolation between providers
+- Structured JSON report generation
+
+Run the real comparison:
+
+```powershell
+python -m scripts.compare_providers
+```
+
+Generated report:
+
+```text
+reports/provider_comparisons/provider_comparison.json
+```
+
+Latest local execution:
+
+| Provider | Model | Latency | Status |
+|---|---|---:|---|
+| OpenAI | `gpt-4.1-mini` | 3238.97 ms | Success |
+| Gemini | `gemini-3.5-flash-lite` | 1007.57 ms | Success |
+
+These latency values represent a single execution and should not be interpreted as a statistically significant performance benchmark. Multi-run aggregation is planned for the next analytics milestone.
 
 ---
 
