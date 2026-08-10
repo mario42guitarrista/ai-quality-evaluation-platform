@@ -5,3 +5,4 @@ reports/evaluations/
 reports/model_benchmarks/
 reports/executive/*.pdf
 *.pyc
+reports/provider_comparisons/
