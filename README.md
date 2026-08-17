@@ -43,17 +43,19 @@ The platform aims to:
 - Provider Latency Measurement
 - Failure-Isolated Provider Execution
 - JSON Comparison Reports
+- Multi-Run Provider Benchmarking
+- Aggregated Latency Analytics
+- Success-Rate Analytics
+- JSON Benchmark Reports
 
 ## In Progress
 
-- Multi-Run Provider Benchmarking
+- Cost Analytics
 
 ## Planned
 
 - Claude Provider
 - Ollama Provider
-- Aggregated Latency Analytics
-- Cost Analytics
 - REST API
 - Docker Deployment
 - Streamlit Dashboard
@@ -103,6 +105,7 @@ Architecture components:
 - `Provider Factory`: creates providers dynamically by name
 - `LLMService`: executes prompts without depending on provider implementations
 - `MultiProviderComparisonService`: executes the same prompt across multiple providers, measures latency, and isolates failures
+- `MultiRunProviderBenchmarkService`: executes multiple comparison rounds and calculates aggregated latency and reliability metrics
 
 Available providers:
 
@@ -110,7 +113,7 @@ Available providers:
 - Gemini
 - Mock
 
-The Mock Provider allows the service and provider architecture to be tested without consuming API credits. The automated test suite currently contains 16 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, comparison execution, latency measurement, failure isolation, and unsupported-provider handling.
+The Mock Provider allows the service and provider architecture to be tested without consuming API credits. The automated test suite currently contains 21 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, comparison execution, latency measurement, failure isolation, multi-run aggregation, success-rate calculation, and input validation.
 
 Planned providers:
 
@@ -145,14 +148,56 @@ Generated report:
 reports/provider_comparisons/provider_comparison.json
 ```
 
-Latest local execution:
+Example single-run execution:
 
 | Provider | Model | Latency | Status |
 |---|---|---:|---|
 | OpenAI | `gpt-4.1-mini` | 3238.97 ms | Success |
 | Gemini | `gemini-3.5-flash-lite` | 1007.57 ms | Success |
 
-These latency values represent a single execution and should not be interpreted as a statistically significant performance benchmark. Multi-run aggregation is planned for the next analytics milestone.
+These latency values represent a single execution and should not be interpreted as a statistically significant performance benchmark. Aggregated metrics are available through the multi-run benchmark workflow below.
+
+---
+
+## Multi-Run Provider Benchmarking
+
+The platform can execute multiple comparison rounds and aggregate reliability and latency metrics for each provider.
+
+Benchmark capabilities:
+
+- Configurable number of executions
+- Individual result tracking by run
+- Successful and failed execution totals
+- Success-rate calculation
+- Minimum latency
+- Maximum latency
+- Average latency
+- Median latency
+- Failure isolation across every run
+- Structured JSON benchmark reports
+
+Latency aggregates are calculated using successful executions only. Failed attempts remain available in the individual results and are included in the failure count and success rate.
+
+Run the real benchmark:
+
+```powershell
+python -m scripts.benchmark_providers
+```
+
+Generated report:
+
+```text
+reports/provider_benchmarks/provider_benchmark.json
+```
+
+Latest local benchmark with three runs per provider:
+
+| Provider | Model | Runs | Success Rate | Minimum | Average | Median | Maximum |
+|---|---|---:|---:|---:|---:|---:|---:|
+| OpenAI | `gpt-4.1-mini` | 3 | 100.00% | 1147.37 ms | 1985.33 ms | 1664.97 ms | 3143.65 ms |
+| Gemini | `gemini-3.5-flash-lite` | 3 | 100.00% | 888.23 ms | 915.61 ms | 907.91 ms | 950.68 ms |
+
+These results describe a small local sample and should not be interpreted as definitive provider-performance conclusions. Larger sample sizes and cost analytics are planned for the next milestone.
 
 ---
 
