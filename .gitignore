@@ -6,3 +6,4 @@ reports/model_benchmarks/
 reports/executive/*.pdf
 *.pyc
 reports/provider_comparisons/
+reports/provider_benchmarks/
