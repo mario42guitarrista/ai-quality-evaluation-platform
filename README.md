@@ -24,49 +24,132 @@ The platform aims to:
 
 ---
 
+
 ## Roadmap
+
+The project evolves incrementally. Every new technology must solve a real architectural, testing, delivery, or observability requirement.
 
 ### Completed
 
-- OpenAI Integration
-- Gemini Integration
-- Context-Aware Evaluation
-- LLM-as-a-Judge
-- Prompt Benchmark
-- Model Benchmark
-- SQLite Analytics
-- SQL Dashboard
-- Executive PDF Reports
-- GitHub Actions CI/CD
-- Provider-Based Architecture
-- Provider Factory
-- Mock Provider
-- Multi-Provider Service Integration
-- Real Multi-Provider Comparison
-- Provider Latency Measurement
-- Failure-Isolated Provider Execution
-- JSON Comparison Reports
-- Multi-Run Provider Benchmarking
-- Aggregated Latency Analytics
-- Success-Rate Analytics
-- JSON Benchmark Reports
-- Provider Token Usage Tracking
-- Cached and Reasoning Token Tracking
-- Versioned Provider Pricing
-- Per-Request Cost Estimation
-- Multi-Run Cost Aggregation
-- Provider Cost Analytics
+* OpenAI Integration
+* Gemini Integration
+* Context-Aware Evaluation
+* LLM-as-a-Judge
+* Prompt Benchmark
+* Model Benchmark
+* SQLite Analytics
+* SQL Dashboard
+* Executive PDF Reports
+* GitHub Actions CI/CD
+* Provider-Based Architecture
+* Provider Factory
+* Mock Provider
+* Multi-Provider Service Integration
+* Real Multi-Provider Comparison
+* Provider Latency Measurement
+* Failure-Isolated Provider Execution
+* JSON Comparison Reports
+* Multi-Run Provider Benchmarking
+* Aggregated Latency Analytics
+* Success-Rate Analytics
+* JSON Benchmark Reports
+* Provider Token Usage Tracking
+* Cached and Reasoning Token Tracking
+* Versioned Provider Pricing
+* Per-Request Cost Estimation
+* Multi-Run Cost Aggregation
+* Provider Cost Analytics
 
-### Next Milestone
+### Current Focus — REST API Foundation
 
-- REST API
+* FastAPI application foundation
+* Health-check endpoint
+* Automatic OpenAPI documentation
+* Deterministic automated API test foundation
+* Dependency injection for testable API execution
+* Reuse of the existing provider and service architecture
 
-### Planned
+### Planned Evolution
 
-- Claude Provider
-- Ollama Provider
-- Docker Deployment
-- Streamlit Dashboard
+#### REST API Capabilities
+
+* Evaluation API
+* Provider Comparison API
+* Multi-Run Provider Benchmark API
+* Provider Metrics API
+* Request and response validation with Pydantic
+* Consistent HTTP error handling
+* Versioned API contracts
+
+#### Automated Testing Architecture
+
+* Dedicated API tests
+* Unit-test organization
+* Integration-test organization
+* Provider contract tests
+* OpenAPI contract validation
+* Separation of deterministic tests from live provider smoke tests
+* Incremental test-suite organization without disrupting existing coverage
+* Independent CI feedback for fast, integration, and external-provider tests
+
+#### Containerization
+
+* Dockerized FastAPI application
+* Environment-based configuration
+* Container health checks
+* Reproducible local execution
+* Docker build validation in CI/CD
+* Docker Compose only when multiple runtime services justify it
+
+#### Metrics and Observability
+
+* Historical provider latency
+* Token-consumption history
+* Estimated-cost history
+* Provider success and failure trends
+* Provider reliability metrics
+* Structured application logging
+* Request correlation and traceable execution identifiers
+* Metrics endpoints backed by persisted platform data
+* Observability dashboards based on real platform signals
+
+#### Provider Expansion
+
+* Claude Provider
+* Provider contract validation for new integrations
+* Ollama Provider after the local runtime architecture is prepared
+* Azure OpenAI evaluation when justified by deployment requirements
+
+#### Web Interface and End-to-End Testing
+
+* Streamlit interface consuming the REST API
+* Provider comparison workflow through the web interface
+* Benchmark and metrics visualization
+* Playwright E2E tests for real user workflows
+* Playwright adoption only after a testable web interface exists
+
+#### Cloud Deployment
+
+* Cloud-ready application configuration
+* AWS deployment after containerization and health checks
+* Cloud service selection based on actual platform requirements
+* Secure secrets and environment management
+* Cloud logging and operational monitoring
+* Deployment smoke tests
+
+### Roadmap Principles
+
+* Preserve stable services, tests, reports, and provider integrations.
+* Introduce architectural changes through small, reviewable milestones.
+* Reuse the existing service layer instead of duplicating business logic in API endpoints.
+* Add automated tests together with every new capability.
+* Keep external-provider calls isolated from deterministic test execution.
+* Introduce Docker, Playwright, and Cloud only when supported by a real application requirement.
+* Maintain documentation, CI/CD validation, and structured Git workflows for every milestone.
+
+The planned progression demonstrates:
+
+**Python + Pytest + API + SQL + CI/CD + Docker + Playwright + Cloud + Automation Architecture + AI Quality Engineering.**
 
 ---
 
