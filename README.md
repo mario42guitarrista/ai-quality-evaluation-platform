@@ -1,10 +1,10 @@
 # AI Quality Evaluation Platform
 
-An AI Quality Engineering platform designed to evaluate, benchmark, monitor, and report the quality of Large Language Model (LLM) responses.
+An AI Quality Engineering platform designed to evaluate, benchmark, monitor, and report the quality, reliability, performance, token consumption, and estimated cost of Large Language Model (LLM) responses.
 
-This project simulates a real-world AI Quality Engineering workflow by combining automated prompt evaluation, semantic assessment using LLM-as-a-Judge, benchmarking, SQL analytics, dashboards, executive reporting, and CI/CD automation.
+This project simulates a real-world AI Quality Engineering workflow by combining automated prompt evaluation, semantic assessment using LLM-as-a-Judge, multi-provider benchmarking, token and cost analytics, SQL analytics, dashboards, executive reporting, and CI/CD automation.
 
-The primary goal is not only to consume AI models, but to build an engineering platform capable of continuously measuring, comparing, and improving the quality of AI-generated responses using software engineering best practices.
+The primary goal is not only to consume AI models, but to build an engineering platform capable of continuously measuring, comparing, and improving AI-generated responses using software engineering and quality engineering best practices.
 
 ---
 
@@ -12,8 +12,11 @@ The primary goal is not only to consume AI models, but to build an engineering p
 
 The platform aims to:
 
-- Evaluate AI-generated responses using both keyword-based and semantic evaluation.
-- Benchmark multiple LLM models using standardized prompts.
+- Evaluate AI-generated responses using keyword-based and semantic evaluation.
+- Compare multiple LLM providers using standardized prompts.
+- Measure provider latency, reliability, and token consumption.
+- Estimate provider costs using versioned pricing configurations.
+- Isolate provider and pricing failures during comparison workflows.
 - Store historical evaluation data for SQL analytics.
 - Generate dashboards and executive reports automatically.
 - Apply AI Quality Engineering and Observability concepts.
@@ -21,9 +24,9 @@ The platform aims to:
 
 ---
 
-# Roadmap
+## Roadmap
 
-## Completed
+### Completed
 
 - OpenAI Integration
 - Gemini Integration
@@ -47,16 +50,21 @@ The platform aims to:
 - Aggregated Latency Analytics
 - Success-Rate Analytics
 - JSON Benchmark Reports
+- Provider Token Usage Tracking
+- Cached and Reasoning Token Tracking
+- Versioned Provider Pricing
+- Per-Request Cost Estimation
+- Multi-Run Cost Aggregation
+- Provider Cost Analytics
 
-## In Progress
+### Next Milestone
 
-- Cost Analytics
+- REST API
 
-## Planned
+### Planned
 
 - Claude Provider
 - Ollama Provider
-- REST API
 - Docker Deployment
 - Streamlit Dashboard
 
@@ -64,17 +72,19 @@ The platform aims to:
 
 ## Key Features
 
-## Multi-Provider API Integration
+### Multi-Provider API Integration
 
 - OpenAI API integration
 - Gemini API integration through the Google GenAI SDK
 - Dynamic provider and model selection
 - Automatic prompt execution
+- Structured token usage metadata
+- Per-request estimated cost
 - AI-generated responses
 
 ---
 
-# Technology Stack
+## Technology Stack
 
 - Python
 - OpenAI API
@@ -98,14 +108,17 @@ The platform uses a provider abstraction layer that decouples the evaluation eng
 
 Architecture components:
 
-- `BaseLLMProvider`: defines the common provider interface
-- `OpenAIProvider`: handles real OpenAI API requests
-- `GeminiProvider`: handles real Gemini API requests through the Google GenAI SDK
+- `BaseLLMProvider`: defines the common provider interface and provides backward-compatible usage tracking
+- `ProviderGenerationResult`: normalizes response text and token metadata across providers
+- `OpenAIProvider`: handles real OpenAI API requests and extracts OpenAI usage metadata
+- `GeminiProvider`: handles real Gemini API requests and normalizes Google GenAI usage metadata
 - `MockProvider`: generates deterministic responses without external API calls
 - `Provider Factory`: creates providers dynamically by name
 - `LLMService`: executes prompts without depending on provider implementations
-- `MultiProviderComparisonService`: executes the same prompt across multiple providers, measures latency, and isolates failures
-- `MultiRunProviderBenchmarkService`: executes multiple comparison rounds and calculates aggregated latency and reliability metrics
+- `ModelPricing`: stores immutable, versioned pricing configurations
+- `ProviderCostService`: estimates uncached input, cached input, output, and total costs
+- `MultiProviderComparisonService`: compares providers while measuring latency, tokens, estimated cost, success, and errors
+- `MultiRunProviderBenchmarkService`: executes multiple comparison rounds and aggregates latency, reliability, token consumption, and estimated cost
 
 Available providers:
 
@@ -113,7 +126,9 @@ Available providers:
 - Gemini
 - Mock
 
-The Mock Provider allows the service and provider architecture to be tested without consuming API credits. The automated test suite currently contains 21 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, comparison execution, latency measurement, failure isolation, multi-run aggregation, success-rate calculation, and input validation.
+The Mock Provider allows the service and provider architecture to be tested without consuming API credits.
+
+The automated test suite currently contains 38 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, backward compatibility, token normalization, comparison execution, latency measurement, failure isolation, pricing configuration, cost estimation, multi-run aggregation, success-rate calculation, and input validation.
 
 Planned providers:
 
@@ -132,8 +147,12 @@ Comparison capabilities:
 - Dynamic provider and model selection
 - Identical prompt execution across providers
 - Per-provider latency measurement
+- Input, cached input, output, reasoning, and total token tracking
+- Estimated input, cached input, output, and total cost
+- Pricing tier and effective-date metadata
 - Independent success and error tracking
 - Failure isolation between providers
+- Cost-estimation error isolation
 - Structured JSON report generation
 
 Run the real comparison:
@@ -148,20 +167,76 @@ Generated report:
 reports/provider_comparisons/provider_comparison.json
 ```
 
-Example single-run execution:
+Latest local single-run execution:
 
-| Provider | Model | Latency | Status |
-|---|---|---:|---|
-| OpenAI | `gpt-4.1-mini` | 3238.97 ms | Success |
-| Gemini | `gemini-3.5-flash-lite` | 1007.57 ms | Success |
+| Provider | Model | Latency | Input Tokens | Output Tokens | Total Tokens | Estimated Cost | Status |
+|---|---|---:|---:|---:|---:|---:|---|
+| OpenAI | `gpt-4.1-mini` | 3751.10 ms | 18 | 14 | 32 | $0.00002960 | Success |
+| Gemini | `gemini-3.5-flash-lite` | 1690.59 ms | 12 | 26 | 38 | $0.00006860 | Success |
 
-These latency values represent a single execution and should not be interpreted as a statistically significant performance benchmark. Aggregated metrics are available through the multi-run benchmark workflow below.
+These values represent a single local execution and should not be interpreted as statistically significant provider-performance or cost conclusions.
+
+---
+
+## Provider Cost Analytics
+
+The platform collects normalized usage metadata from each provider response and estimates the corresponding cost using a versioned pricing catalog.
+
+Tracked usage fields:
+
+- Input tokens
+- Cached input tokens
+- Output tokens
+- Reasoning tokens
+- Total tokens
+
+Calculated cost fields:
+
+- Uncached input cost
+- Cached input cost
+- Output cost
+- Total estimated cost
+- Average estimated cost per benchmark run
+- Number of priced and unpriced successful executions
+
+The normalized cost calculation is:
+
+```text
+uncached_input_tokens = input_tokens - cached_input_tokens
+
+estimated_total_cost =
+    uncached_input_cost
+    + cached_input_cost
+    + output_cost
+```
+
+All financial calculations use Python `Decimal` values internally to reduce floating-point rounding errors.
+
+### Pricing Snapshot
+
+Pricing effective date: `2026-08-20`
+
+| Provider | Model | Tier | Input / 1M Tokens | Cached Input / 1M Tokens | Output / 1M Tokens |
+|---|---|---|---:|---:|---:|
+| OpenAI | `gpt-4.1-mini` | `standard_paid` | $0.40 | $0.10 | $1.60 |
+| Gemini | `gemini-3.5-flash-lite` | `standard_paid` | $0.30 | $0.03 | $2.50 |
+
+Official pricing references:
+
+- [OpenAI GPT-4.1 mini model pricing](https://developers.openai.com/api/docs/models/gpt-4.1-mini)
+- [Google Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing)
+
+Pricing is intentionally stored as versioned application configuration rather than embedded directly in the comparison logic. This makes pricing changes auditable and prevents provider-specific billing rules from being coupled to benchmark execution.
+
+Cost values generated by the platform are estimates, not billing statements. Actual charges may vary because of free tiers, batch pricing, provider discounts, pricing changes, account configuration, or other billing rules. The Gemini estimates use the standard paid tier even when an execution may qualify for the free tier.
+
+A pricing configuration error does not convert a successful provider response into a failed execution. The response remains successful, the cost fields remain unavailable, and the pricing error is recorded separately.
 
 ---
 
 ## Multi-Run Provider Benchmarking
 
-The platform can execute multiple comparison rounds and aggregate reliability and latency metrics for each provider.
+The platform can execute multiple comparison rounds and aggregate reliability, latency, token consumption, and estimated cost for each provider.
 
 Benchmark capabilities:
 
@@ -173,10 +248,16 @@ Benchmark capabilities:
 - Maximum latency
 - Average latency
 - Median latency
+- Aggregated token usage
+- Aggregated estimated cost
+- Average estimated cost per priced run
+- Priced and unpriced execution tracking
 - Failure isolation across every run
 - Structured JSON benchmark reports
 
 Latency aggregates are calculated using successful executions only. Failed attempts remain available in the individual results and are included in the failure count and success rate.
+
+Cost averages are calculated using successfully priced executions only. A provider response can therefore remain successful even when its cost cannot be estimated.
 
 Run the real benchmark:
 
@@ -192,12 +273,25 @@ reports/provider_benchmarks/provider_benchmark.json
 
 Latest local benchmark with three runs per provider:
 
-| Provider | Model | Runs | Success Rate | Minimum | Average | Median | Maximum |
-|---|---|---:|---:|---:|---:|---:|---:|
-| OpenAI | `gpt-4.1-mini` | 3 | 100.00% | 1147.37 ms | 1985.33 ms | 1664.97 ms | 3143.65 ms |
-| Gemini | `gemini-3.5-flash-lite` | 3 | 100.00% | 888.23 ms | 915.61 ms | 907.91 ms | 950.68 ms |
+### Latency and Reliability
 
-These results describe a small local sample and should not be interpreted as definitive provider-performance conclusions. Larger sample sizes and cost analytics are planned for the next milestone.
+| Provider | Model | Successful Runs | Success Rate | Minimum | Average | Median | Maximum |
+|---|---|---:|---:|---:|---:|---:|---:|
+| OpenAI | `gpt-4.1-mini` | 3/3 | 100.00% | 1291.93 ms | 2088.18 ms | 1601.24 ms | 3371.38 ms |
+| Gemini | `gemini-3.5-flash-lite` | 3/3 | 100.00% | 60501.74 ms | 75797.58 ms | 80576.90 ms | 86314.10 ms |
+
+### Token Usage and Estimated Cost
+
+| Provider | Input | Cached | Output | Reasoning | Total | Total Estimated Cost | Average per Run |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| OpenAI | 54 | 0 | 42 | 0 | 96 | $0.00008880 | $0.00002960 |
+| Gemini | 36 | 0 | 82 | 0 | 118 | $0.00021580 | $0.00007193 |
+
+All six executions completed successfully and produced usage metadata and cost estimates.
+
+Gemini latency during this specific three-run sample was substantially higher than in the earlier single-run comparison. This variation demonstrates the importance of repeated measurement and historical observability, but it does not establish a general provider-performance conclusion. Runtime, network, queue, or API conditions were not independently diagnosed by this experiment.
+
+These results describe a small local sample. Larger sample sizes and repeated executions across different periods would be required for statistically meaningful provider comparisons.
 
 ---
 
@@ -218,8 +312,9 @@ Example:
     "python"
   ]
 }
-
 ```
+
+---
 
 ## LLM-as-a-Judge
 
@@ -238,8 +333,10 @@ Automatic prompt ranking based on Judge Score.
 ---
 
 ## Model Benchmark
+
 Supports benchmarking across different LLM models while keeping the same evaluation criteria, enabling objective comparison between models.
-Compare different LLM models using the same prompt and evaluate:
+
+Model comparison metrics:
 
 - Judge Score
 - Accuracy
@@ -290,19 +387,22 @@ Interactive HTML dashboard displaying:
 
 ## GitHub Actions CI/CD
 
-Automated pipeline that:
+The automated pipeline:
 
-- Runs tests
-- Executes evaluations
+- Runs the test suite
+- Executes AI evaluations
 - Generates dashboards
 - Creates executive PDF reports
-- Uploads artifacts
+- Uploads generated artifacts
 
-# Author
+---
+
+## Author
 
 **Mario Lima**
 
 Quality Assurance Engineer | AI Quality Engineering | Test Automation | Python
 
 GitHub:
+
 https://github.com/mario42guitarrista/ai-quality-evaluation-platform

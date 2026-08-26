@@ -42,6 +42,15 @@ def format_latency(
     return f"{latency_ms:.2f} ms"
 
 
+def format_cost(
+    cost_usd: float | None
+) -> str:
+    if cost_usd is None:
+        return "N/A"
+
+    return f"${cost_usd:.8f}"
+
+
 def main() -> None:
     benchmark_service = (
         MultiRunProviderBenchmarkService()
@@ -104,6 +113,38 @@ def main() -> None:
             f"median={format_latency(summary.median_latency_ms)} | "
             f"max={format_latency(summary.maximum_latency_ms)}"
         )
+
+        print(
+            "Tokens: "
+            f"input={summary.total_input_tokens} | "
+            f"cached={summary.total_cached_input_tokens} | "
+            f"output={summary.total_output_tokens} | "
+            f"reasoning={summary.total_reasoning_tokens} | "
+            f"total={summary.total_tokens}"
+        )
+
+        total_cost = format_cost(
+            summary.estimated_total_cost_usd
+        )
+        average_cost = format_cost(
+            summary.estimated_average_cost_per_run_usd
+        )
+
+        print(
+            "Estimated cost: "
+            f"total={total_cost} | "
+            f"average/run={average_cost} | "
+            f"priced runs={summary.priced_runs}/"
+            f"{summary.successful_runs}"
+        )
+
+        if summary.pricing_tier:
+            print(
+                "Pricing: "
+                f"tier={summary.pricing_tier} | "
+                "effective date="
+                f"{summary.pricing_effective_date}"
+            )
 
         print()
 

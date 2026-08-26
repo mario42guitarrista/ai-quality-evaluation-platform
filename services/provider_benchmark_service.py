@@ -29,6 +29,18 @@ class ProviderBenchmarkRunResult:
     latency_ms: float
     success: bool
     error: str | None
+    input_tokens: int = 0
+    output_tokens: int = 0
+    total_tokens: int = 0
+    cached_input_tokens: int = 0
+    reasoning_tokens: int = 0
+    estimated_uncached_input_cost_usd: float | None = None
+    estimated_cached_input_cost_usd: float | None = None
+    estimated_output_cost_usd: float | None = None
+    estimated_total_cost_usd: float | None = None
+    pricing_tier: str | None = None
+    pricing_effective_date: str | None = None
+    cost_error: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -46,6 +58,17 @@ class ProviderBenchmarkSummary:
     maximum_latency_ms: float | None
     average_latency_ms: float | None
     median_latency_ms: float | None
+    total_input_tokens: int = 0
+    total_output_tokens: int = 0
+    total_tokens: int = 0
+    total_cached_input_tokens: int = 0
+    total_reasoning_tokens: int = 0
+    priced_runs: int = 0
+    unpriced_successful_runs: int = 0
+    estimated_total_cost_usd: float | None = None
+    estimated_average_cost_per_run_usd: float | None = None
+    pricing_tier: str | None = None
+    pricing_effective_date: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -104,7 +127,35 @@ class MultiRunProviderBenchmarkService:
                         response=result.response,
                         latency_ms=result.latency_ms,
                         success=result.success,
-                        error=result.error
+                        error=result.error,
+                        input_tokens=result.input_tokens,
+                        output_tokens=result.output_tokens,
+                        total_tokens=result.total_tokens,
+                        cached_input_tokens=(
+                            result.cached_input_tokens
+                        ),
+                        reasoning_tokens=(
+                            result.reasoning_tokens
+                        ),
+                        estimated_uncached_input_cost_usd=(
+                            result
+                            .estimated_uncached_input_cost_usd
+                        ),
+                        estimated_cached_input_cost_usd=(
+                            result
+                            .estimated_cached_input_cost_usd
+                        ),
+                        estimated_output_cost_usd=(
+                            result.estimated_output_cost_usd
+                        ),
+                        estimated_total_cost_usd=(
+                            result.estimated_total_cost_usd
+                        ),
+                        pricing_tier=result.pricing_tier,
+                        pricing_effective_date=(
+                            result.pricing_effective_date
+                        ),
+                        cost_error=result.cost_error
                     )
                 )
 
@@ -142,8 +193,9 @@ class MultiRunProviderBenchmarkService:
                 "Runs must be greater than or equal to 1."
             )
 
-    @staticmethod
+    @classmethod
     def _create_summary(
+        cls,
         configuration: ProviderConfiguration,
         run_results: Sequence[ProviderBenchmarkRunResult]
     ) -> ProviderBenchmarkSummary:
@@ -168,9 +220,22 @@ class MultiRunProviderBenchmarkService:
             for result in successful_results
         ]
 
+        priced_results = [
+            result
+            for result in successful_results
+            if result.estimated_total_cost_usd is not None
+        ]
+
+        estimated_costs = [
+            result.estimated_total_cost_usd
+            for result in priced_results
+            if result.estimated_total_cost_usd is not None
+        ]
+
         total_runs = len(provider_results)
         successful_runs = len(successful_results)
         failed_runs = total_runs - successful_runs
+        priced_runs = len(priced_results)
 
         success_rate_percent = (
             round(
@@ -204,6 +269,35 @@ class MultiRunProviderBenchmarkService:
             average_latency_ms = None
             median_latency_ms = None
 
+        if estimated_costs:
+            estimated_total_cost_usd = round(
+                sum(estimated_costs),
+                12
+            )
+            estimated_average_cost_per_run_usd = round(
+                mean(estimated_costs),
+                12
+            )
+        else:
+            estimated_total_cost_usd = None
+            estimated_average_cost_per_run_usd = None
+
+        pricing_tier = cls._single_or_mixed(
+            {
+                result.pricing_tier
+                for result in priced_results
+                if result.pricing_tier is not None
+            }
+        )
+
+        pricing_effective_date = cls._single_or_mixed(
+            {
+                result.pricing_effective_date
+                for result in priced_results
+                if result.pricing_effective_date is not None
+            }
+        )
+
         return ProviderBenchmarkSummary(
             provider_name=configuration.provider_name,
             model=configuration.model,
@@ -214,5 +308,51 @@ class MultiRunProviderBenchmarkService:
             minimum_latency_ms=minimum_latency_ms,
             maximum_latency_ms=maximum_latency_ms,
             average_latency_ms=average_latency_ms,
-            median_latency_ms=median_latency_ms
+            median_latency_ms=median_latency_ms,
+            total_input_tokens=sum(
+                result.input_tokens
+                for result in successful_results
+            ),
+            total_output_tokens=sum(
+                result.output_tokens
+                for result in successful_results
+            ),
+            total_tokens=sum(
+                result.total_tokens
+                for result in successful_results
+            ),
+            total_cached_input_tokens=sum(
+                result.cached_input_tokens
+                for result in successful_results
+            ),
+            total_reasoning_tokens=sum(
+                result.reasoning_tokens
+                for result in successful_results
+            ),
+            priced_runs=priced_runs,
+            unpriced_successful_runs=(
+                successful_runs - priced_runs
+            ),
+            estimated_total_cost_usd=(
+                estimated_total_cost_usd
+            ),
+            estimated_average_cost_per_run_usd=(
+                estimated_average_cost_per_run_usd
+            ),
+            pricing_tier=pricing_tier,
+            pricing_effective_date=(
+                pricing_effective_date
+            )
         )
+
+    @staticmethod
+    def _single_or_mixed(
+        values: set[str]
+    ) -> str | None:
+        if not values:
+            return None
+
+        if len(values) == 1:
+            return next(iter(values))
+
+        return "mixed"
