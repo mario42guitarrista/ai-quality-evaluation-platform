@@ -29,6 +29,15 @@ REPORT_DIRECTORY = Path(
 )
 
 
+def format_cost(
+    cost_usd: float | None
+) -> str:
+    if cost_usd is None:
+        return "N/A"
+
+    return f"${cost_usd:.8f}"
+
+
 def main() -> None:
     comparison_service = MultiProviderComparisonService()
 
@@ -78,12 +87,56 @@ def main() -> None:
         print(
             f"{result.provider_name.upper()} | "
             f"{result.model} | "
-            f"{result.latency_ms} ms | "
+            f"{result.latency_ms:.2f} ms | "
             f"{status}"
         )
 
         if result.response:
             print(f"Response: {result.response}")
+
+        if result.success:
+            print(
+                "Tokens: "
+                f"input={result.input_tokens} | "
+                f"cached={result.cached_input_tokens} | "
+                f"output={result.output_tokens} | "
+                f"reasoning={result.reasoning_tokens} | "
+                f"total={result.total_tokens}"
+            )
+
+            uncached_input_cost = format_cost(
+                result.estimated_uncached_input_cost_usd
+            )
+            cached_input_cost = format_cost(
+                result.estimated_cached_input_cost_usd
+            )
+            output_cost = format_cost(
+                result.estimated_output_cost_usd
+            )
+            total_cost = format_cost(
+                result.estimated_total_cost_usd
+            )
+
+            print(
+                "Estimated cost: "
+                f"input={uncached_input_cost} | "
+                f"cached={cached_input_cost} | "
+                f"output={output_cost} | "
+                f"total={total_cost}"
+            )
+
+            if result.pricing_tier:
+                print(
+                    "Pricing: "
+                    f"tier={result.pricing_tier} | "
+                    "effective date="
+                    f"{result.pricing_effective_date}"
+                )
+
+            if result.cost_error:
+                print(
+                    f"Cost warning: {result.cost_error}"
+                )
 
         if result.error:
             print(f"Error: {result.error}")
