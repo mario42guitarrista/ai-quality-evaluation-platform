@@ -59,15 +59,20 @@ The project evolves incrementally. Every new technology must solve a real archit
 * Per-Request Cost Estimation
 * Multi-Run Cost Aggregation
 * Provider Cost Analytics
+* FastAPI Application Foundation
+* Health-Check REST Endpoint
+* Automatic OpenAPI Documentation
+* Application Factory for Isolated API Testing
+* Initial Automated API Test Layer
 
-### Current Focus — REST API Foundation
+### Current Focus — Provider Comparison REST API
 
-* FastAPI application foundation
-* Health-check endpoint
-* Automatic OpenAPI documentation
-* Deterministic automated API test foundation
-* Dependency injection for testable API execution
-* Reuse of the existing provider and service architecture
+* Expose the existing `MultiProviderComparisonService` through an HTTP endpoint
+* Define validated request and response contracts with Pydantic
+* Inject the comparison service for deterministic API testing
+* Preserve latency, token usage, estimated cost, success, response, and error metadata
+* Translate validation failures into consistent HTTP responses
+* Add isolated API tests without calling external providers
 
 ### Planned Evolution
 
@@ -170,6 +175,11 @@ The planned progression demonstrates:
 ## Technology Stack
 
 - Python
+- FastAPI
+- Uvicorn
+- Pydantic
+- OpenAPI / Swagger UI
+- HTTPX2
 - OpenAI API
 - Gemini API
 - Google GenAI SDK
@@ -182,6 +192,43 @@ The planned progression demonstrates:
 - CSS
 - GitHub Actions
 - JSON
+
+---
+
+## REST API Foundation
+
+The platform provides a FastAPI application as an HTTP entry point while preserving the existing provider and service layers.
+
+The initial REST API foundation includes:
+
+- Application factory for isolated execution and testing
+- Modular router organization
+- Deterministic health-check endpoint
+- Automatic OpenAPI 3.1 contract generation
+- Interactive Swagger UI documentation
+- Dedicated automated API tests
+
+Run the API locally:
+
+```powershell
+.\venv\Scripts\python.exe -m uvicorn api.main:app --reload
+```
+
+Available endpoints:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/health` | Confirms that the API process is available |
+| `GET` | `/docs` | Opens the interactive Swagger UI |
+| `GET` | `/openapi.json` | Returns the generated OpenAPI contract |
+
+Run the API tests:
+
+```powershell
+.\venv\Scripts\python.exe -m pytest tests\api -v
+```
+
+The health check is intentionally independent from databases and external LLM providers, making it suitable for deterministic tests, CI/CD validation, and future container health checks.
 
 ---
 
@@ -211,7 +258,7 @@ Available providers:
 
 The Mock Provider allows the service and provider architecture to be tested without consuming API credits.
 
-The automated test suite currently contains 38 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, backward compatibility, token normalization, comparison execution, latency measurement, failure isolation, pricing configuration, cost estimation, multi-run aggregation, success-rate calculation, and input validation.
+The automated test suite currently contains 40 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, backward compatibility, token normalization, comparison execution, latency measurement, failure isolation, pricing configuration, cost estimation, multi-run aggregation, success-rate calculation, input validation, FastAPI health-check behavior, and OpenAPI endpoint documentation.
 
 Planned providers:
 
