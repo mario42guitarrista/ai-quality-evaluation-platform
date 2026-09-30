@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
 from api.routers.health import router as health_router
+from api.routers.provider_comparison import (
+    router as provider_comparison_router,
+)
 
 
 def create_app() -> FastAPI:
@@ -14,6 +17,9 @@ def create_app() -> FastAPI:
     )
 
     application.include_router(health_router)
+    application.include_router(
+        provider_comparison_router
+    )
 
     return application
 
