@@ -64,22 +64,27 @@ The project evolves incrementally. Every new technology must solve a real archit
 * Automatic OpenAPI Documentation
 * Application Factory for Isolated API Testing
 * Initial Automated API Test Layer
+* Versioned Provider Comparison REST Endpoint
+* Pydantic Request and Response Contracts
+* Dependency-Injected Comparison Service
+* API Validation and HTTP Error Mapping
+* Provider Comparison OpenAPI Contract
+* Deterministic Mock Provider API Integration Test
 
-### Current Focus — Provider Comparison REST API
+### Current Focus — Multi-Run Provider Benchmark REST API
 
-* Expose the existing `MultiProviderComparisonService` through an HTTP endpoint
-* Define validated request and response contracts with Pydantic
-* Inject the comparison service for deterministic API testing
-* Preserve latency, token usage, estimated cost, success, response, and error metadata
-* Translate validation failures into consistent HTTP responses
-* Add isolated API tests without calling external providers
+* Expose the existing `MultiRunProviderBenchmarkService` through an HTTP endpoint
+* Define validated benchmark request and response contracts with Pydantic
+* Inject the benchmark service for deterministic API testing
+* Preserve individual runs, aggregated latency, reliability, token usage, and estimated cost
+* Validate the requested number of runs and provider configurations
+* Add isolated benchmark API tests without calling external providers
 
 ### Planned Evolution
 
 #### REST API Capabilities
 
 * Evaluation API
-* Provider Comparison API
 * Multi-Run Provider Benchmark API
 * Provider Metrics API
 * Request and response validation with Pydantic
@@ -199,14 +204,20 @@ The planned progression demonstrates:
 
 The platform provides a FastAPI application as an HTTP entry point while preserving the existing provider and service layers.
 
-The initial REST API foundation includes:
+The current REST API capabilities include:
 
 - Application factory for isolated execution and testing
 - Modular router organization
 - Deterministic health-check endpoint
+- Versioned provider comparison endpoint
+- Pydantic request and response validation
+- Dependency-injected comparison service
+- Consistent HTTP validation and error mapping
+- Failure-isolated provider results
 - Automatic OpenAPI 3.1 contract generation
 - Interactive Swagger UI documentation
-- Dedicated automated API tests
+- Isolated API tests with injected service doubles
+- Deterministic integration testing with the real `MockProvider`
 
 Run the API locally:
 
@@ -219,8 +230,30 @@ Available endpoints:
 | Method | Endpoint | Purpose |
 |---|---|---|
 | `GET` | `/health` | Confirms that the API process is available |
+| `POST` | `/api/v1/provider-comparisons` | Compares one prompt across configured providers |
 | `GET` | `/docs` | Opens the interactive Swagger UI |
 | `GET` | `/openapi.json` | Returns the generated OpenAPI contract |
+
+Example provider comparison request:
+
+```json
+{
+  "prompt": "Explain regression testing.",
+  "providers": [
+    {
+      "provider_name": "mock",
+      "model": "mock-model",
+      "provider_options": {}
+    }
+  ]
+}
+```
+
+HTTP behavior:
+
+- `200`: the comparison request was processed; individual provider failures remain available through `success` and `error`
+- `400`: the comparison service rejected an otherwise valid request
+- `422`: the request body failed Pydantic contract validation
 
 Run the API tests:
 
@@ -228,7 +261,7 @@ Run the API tests:
 .\venv\Scripts\python.exe -m pytest tests\api -v
 ```
 
-The health check is intentionally independent from databases and external LLM providers, making it suitable for deterministic tests, CI/CD validation, and future container health checks.
+The health check remains independent from databases and external LLM providers. Provider comparison tests use dependency-injected service doubles for isolated contract testing and the real `MockProvider` for deterministic integration testing without API costs.
 
 ---
 
@@ -258,7 +291,7 @@ Available providers:
 
 The Mock Provider allows the service and provider architecture to be tested without consuming API credits.
 
-The automated test suite currently contains 40 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, backward compatibility, token normalization, comparison execution, latency measurement, failure isolation, pricing configuration, cost estimation, multi-run aggregation, success-rate calculation, input validation, FastAPI health-check behavior, and OpenAPI endpoint documentation.
+The automated test suite currently contains 50 passing tests covering AI evaluation, LLM-as-a-Judge, OpenAI connectivity, Gemini behavior, provider selection, dependency injection, backward compatibility, token normalization, comparison execution, latency measurement, failure isolation, pricing configuration, cost estimation, multi-run aggregation, success-rate calculation, input validation, FastAPI health-check behavior, provider comparison request and response contracts, HTTP error mapping, OpenAPI contract validation, and deterministic API integration with the Mock Provider.
 
 Planned providers:
 
